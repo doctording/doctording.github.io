@@ -161,15 +161,15 @@
     var url = 'http://yoursite.com/project/index.html';
     $('#article-banner').geopattern(url);
     $('.header').removeClass('fixed-header')
-    var page = 1 // need to set according to your repos amount(defalut page = 1 and per_page=30)
+    var page = 2 // need to set according to your repos amount(defalut page = 1 and per_page = 30)
     var datas = []
-    
     for (var i=1;i<=page;i++) {
       $.ajax({
         headers: {
           Accept: 'application/vnd.github.v3.raw'
         },
         type: 'get',
+        async: false, // 同步
         url: 'https://api.github.com/users/doctording/repos?page='+i,
         success: function (data) {
           datas = datas.concat(data)
@@ -191,12 +191,20 @@
       }
       return -1
     }
-    window.console.log(datas)
-    var repos = datas.sort(mycmp).slice(0, 6)
-    /*var repos = data.sort(function(a, b) {
-      return (b.stargazers_count - a.stargazers_count)
-    }).slice(0, 6)*/
-
+    var repo_names = [] // if empty use default sort, or list the repos specified
+    function myfilter(element, index, arra){
+      if(repo_names.length != 0){
+          if($.inArray(element.name, repo_names)>=0){
+            return true
+          }
+          return false
+      }
+      if(element.fork) // filter repos that forked
+        return false
+      return true
+    }
+    var repos = datas.sort(mycmp).filter(myfilter).slice(0, 6)
+ 
     var cardHtml = repos.map(function(item) {
       var description = item.description || ""
       if (description.replace(/[\u0391-\uFFE5]/g, "aa").length > 72) {
@@ -217,10 +225,10 @@
       )
     }).join('')
     $('#all-project').html(cardHtml)
-    /*$('.card-header').each(function() {
+    $('.card-header').each(function() {
       var name = $(this).data('name');
       $(this).geopattern(name);
-    })*/
+    })
   })()
 </script>
     <div class="scroll-top">

@@ -163,7 +163,7 @@
     $('.header').removeClass('fixed-header')
     var page = 2 // need to set according to your repos amount(defalut page = 1 and per_page = 30)
     var datas = []
-    for (var i=1;i<=page;i++) {
+    for (var i = 1; i <= page; i ++) {
       $.ajax({
         headers: {
           Accept: 'application/vnd.github.v3.raw'
@@ -178,29 +178,30 @@
     }
 
     function mycmp(a, b){ // compare two repos
-      if(b.stargazers_count > a.stargazers_count){
+      if(b.stargazers_count > a.stargazers_count) {
         return 1
       }
-      if(b.stargazers_count == a.stargazers_count){
-        if(b.forks_count > a.forks_count){
+      if(b.stargazers_count == a.stargazers_count) {
+        if(b.forks_count > a.forks_count) {
           return 1
         }
-        if(b.forks_count == a.forks_count){
+        if(b.forks_count == a.forks_count) {
           return b.name > a.name
         }
       }
       return -1
     }
     var repo_names = [] // if empty use default sort, or list the repos specified
-    function myfilter(element, index, arra){
-      if(repo_names.length != 0){
-          if($.inArray(element.name, repo_names)>=0){
+    function myfilter(element, index, arra) {
+      if(repo_names.length != 0) {
+          if($.inArray(element.name, repo_names) >= 0) {
             return true
           }
           return false
       }
-      if(element.fork) // filter repos that forked
+      if(element.fork) { // filter repos that forked
         return false
+      }
       return true
     }
     var repos = datas.sort(mycmp).filter(myfilter).slice(0, 6)
